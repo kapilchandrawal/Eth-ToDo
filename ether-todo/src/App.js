@@ -2,6 +2,8 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import Web3 from 'web3';
 import './App.css';
+import detectEthereumProvider from '@metamask/detect-provider';
+
 
 export default function App() {
 
@@ -9,6 +11,13 @@ export default function App() {
   const [accounts, setAccount] = useState('');
   const [balance, setBalance] = useState('');
 
+  // const ethereum = window.ethereum;
+  // if (ethereum) {
+  //   ethereum.on('accountsChanged', function (accounts) {
+  //     // Time to reload your interface with accounts[0]!
+  //     console.log(accounts[0])
+  //   });
+  // }
   useEffect(() => {
 
     async function loadBlockchainData() {
@@ -28,19 +37,34 @@ export default function App() {
       console.log("balance:", balance)
     }
     loadBlockchainData()
-  },)
+  }, [])
+
+  const Web3 = require("web3");
+  const ethEnabled = async () => {
+    if (window.ethereum) {
+      await window.ethereum.request({ method: 'eth_requestAccounts' });
+      window.web3 = new Web3(window.ethereum);
+      return true;
+    }
+    if (!ethEnabled()) {
+      alert("Please install MetaMask to use this dApp!");
+    }
+    return false;
+  }
+
+  
 
   return (
 
     <div className="container">
+
       <h1>Welcome</h1>
       <p>Your network : {network}</p>
       <p>Your account : {accounts}</p>
       <p>Your Balance : {balance}</p>
-      {/* <button onClick={() => {
-          ethereum.request({ method: 'eth_requestAccounts' });
-        }}>Enable Ethereum</button> */}
+      <button onClick={ethEnabled}>Enable Ethereum</button>
     </div>
 
   )
 }
+// ethereum.request({ method: 'eth_requestAccounts' });
