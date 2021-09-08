@@ -29,7 +29,7 @@ export default function App() {
       console.log("network:", network)
 
       const accounts = await web3.eth.getAccounts()
-      setAccount(accounts)
+      setAccount(accounts[0])
       console.log("Account:", accounts)
 
       const balance = await web3.eth.getBalance(accounts[0])
@@ -37,10 +37,13 @@ export default function App() {
       console.log("balance:", balance)
     }
     loadBlockchainData()
-  } )
+  },[])
+
 
   const Web3 = require("web3");
+
   async function ethEnabled() {
+    
     try {
       if (window.ethereum) {
         await window.ethereum.request({ method: 'eth_requestAccounts' });
@@ -49,6 +52,7 @@ export default function App() {
 
       if (!ethEnabled()) {
         alert("Please install MetaMask to use this dApp!");
+
       }
     }
     catch (err) {
@@ -56,19 +60,29 @@ export default function App() {
     }
   }
 
+  async function onDisconnect() {
+    console.log("Killing the wallet connection", window.ethereum);
+    if (window.ethereum.close) {
+      await window.ethereum.close();
+      await window.ethereum.clearCachedProvider();
+      window.ethereum = null;
+    }
 
-
-    return (
-
-      <div className="container">
-
-        <h1>Welcome</h1>
-        <p>Your network : {network}</p>
-        <p>Your account : {accounts}</p>
-        <p>Your Balance : {balance}</p>
-        <button onClick={ethEnabled}>Enable Ethereum</button>
-      </div>
-
-    )
   }
+
+  return (
+
+    <div className="container">
+
+      <h1>Welcome</h1>
+      <p>Your network : {network}</p>
+      <p>Your account : {accounts}</p>
+      <p>Your Balance : {balance}</p>
+      <button onClick={ethEnabled}>Connect</button>
+      <button onClick={onDisconnect}>Disconnect</button>
+    </div>
+
+  )
+}
+
 // ethereum.request({ method: 'eth_requestAccounts' });
