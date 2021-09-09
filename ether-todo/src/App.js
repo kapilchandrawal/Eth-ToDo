@@ -18,10 +18,11 @@ export default function App() {
   const [balance, setBalance] = useState('');
   const [isConnect, setIsConnect] = useState(false);
   const [isMetamask, setIsMetamask] = useState(true);
+  const [abc, setAbc] = useState(false);
 
   const [input, setInput] = useState('')
   const [ethInput, setEthInput] = useState('')
-  
+
   useEffect(() => {
     async function loadBlockchainData() {
       if (isConnect === true) {
@@ -66,26 +67,30 @@ export default function App() {
       console.log(err);
     }
   }
-  
-  
+
+
   const sendEther = (e) => {
     console.log(account[0])
     setInput(ethInput)
-    console.log(input)
-    window.ethereum
-    .request({
-      method: 'eth_sendTransaction',
-      params: [
-        {
-          from: account[0],
-          to: '0xA1dD73579Bd792161292f652313bc594De2AFf8C',
+    console.log(typeof (input))
 
-          gas: input,
-        },
-      ],
-    })
-    .then((txHash) => console.log(txHash))
-    .catch((error) => console.error);
+
+    // Math.floor(input)
+
+    window.ethereum
+      .request({
+        method: 'eth_sendTransaction',
+        params: [
+          {
+            from: account[0],
+            to: '0x64aa91dBafe07627F272a93ca46e7A85A7FDd163',
+
+            gas: input,
+          },
+        ],
+      })
+      .then((txHash) => console.log(txHash))
+      .catch((error) => console.error);
   }
   async function onDisconnect() {
     console.log("Disconnected", window.ethereum);
@@ -103,12 +108,12 @@ export default function App() {
           <p>Your Balance : {balance}</p>
           <button onClick={onDisconnect}>Disconnect</button>
           <div>
-            <form>
-              <label>
-                <input type="text" name="name" onChange={(e)=> {setEthInput(e.target.value); console.log(ethInput)}} id="ether-input"/>
-              </label>
-              <button type="button" value="Submit" onClick={sendEther}>Send</button>
-            </form>
+
+            <input type="text" name="name" placeholder="Enter amount here" onChange={(e) => {
+              setEthInput(e.target.value); console.log(ethInput)
+            }} />
+            {abc === true ?
+              <button type="button" value="Submit" onClick={sendEther} >Send</button> : ""}
           </div></div> :
           <div>
             <button onClick={ethEnabled}>Connect</button>
